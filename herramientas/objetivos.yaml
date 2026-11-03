@@ -1,0 +1,57 @@
+# Objetivos del SLA a verificar — caso: enlace dedicado de Internet 100 Mbps
+servicio: "Enlace dedicado de Internet 100 Mbps simétrico"
+cliente: "Empresa Ejemplo SpA"
+proveedor: "Proveedor Ejemplo Telecom"
+
+periodo:
+  etiqueta: "Octubre 2026"
+  inicio: "2026-10-01"
+  dias: 31
+
+# operador: ">=" (mayor o igual es cumplir) o "<=" (menor o igual es cumplir)
+# agregacion: "promedio" o "pNN" (percentil, ej. p95). Disponibilidad se calcula con caídas y mantención.
+metricas:
+  disponibilidad:
+    descripcion: "Disponibilidad mensual (sin mantención programada)"
+    objetivo: 99.9
+    operador: ">="
+    unidad: "%"
+    min_muestras: 28        # días con registro de caídas (aunque sea 0 min)
+  latencia:
+    descripcion: "Latencia RTT al nodo de salida del proveedor (TWAMP)"
+    objetivo: 20
+    operador: "<="
+    unidad: "ms"
+    agregacion: "p95"
+    min_muestras: 28
+  jitter:
+    descripcion: "Variación de retardo, RFC 3393 (TWAMP)"
+    objetivo: 10
+    operador: "<="
+    unidad: "ms"
+    agregacion: "p95"
+    min_muestras: 28
+  perdida:
+    descripcion: "Pérdida de paquetes, RFC 7680 (TWAMP)"
+    objetivo: 0.1
+    operador: "<="
+    unidad: "%"
+    agregacion: "promedio"
+    min_muestras: 28
+  throughput:
+    descripcion: "Throughput TCP, RFC 6349 (prueba semanal)"
+    objetivo: 90
+    operador: ">="
+    unidad: "Mbps"
+    agregacion: "promedio"
+    min_muestras: 4
+
+creditos:
+  moneda: "CLP"
+  cuota_mensual: 450000
+  escalones_disponibilidad:   # se aplica el primer escalón (menor_a ascendente) que alcance el valor medido
+    - { menor_a: 99.9, credito_pct: 10 }
+    - { menor_a: 99.5, credito_pct: 25 }
+    - { menor_a: 99.0, credito_pct: 50 }
+  por_metrica_incumplida_pct: 5   # por cada métrica distinta de disponibilidad que no cumple
+  tope_pct: 60
