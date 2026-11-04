@@ -12,6 +12,8 @@ Uso:
         --objetivos  herramientas/objetivos.yaml \
         [--salida ejemplos/enlace-dedicado/informe.md] [--fecha-emision AAAA-MM-DD]
 
+Sin argumentos usa los archivos de ejemplo del repositorio.
+
 Métricas esperadas en el CSV:
     caida (min), mantenimiento (min), latencia (ms), jitter (ms), perdida (%), throughput (Mbps)
 La disponibilidad se calcula a partir de caida y mantenimiento.
@@ -287,9 +289,10 @@ def generar_informe(cfg, resultados, credito, avisos, args, sha) -> str:
 
 
 def main(argv=None) -> int:
+    raiz = Path(__file__).resolve().parent.parent
     ap = argparse.ArgumentParser(description="Verifica el cumplimiento de un SLA y calcula el crédito de servicio.")
-    ap.add_argument("--mediciones", required=True, help="CSV: fecha,metrica,valor,unidad")
-    ap.add_argument("--objetivos", required=True, help="YAML con los objetivos del SLA")
+    ap.add_argument("--mediciones", default=str(raiz / "datos" / "mediciones-ejemplo.csv"), help="CSV: fecha,metrica,valor,unidad")
+    ap.add_argument("--objetivos", default=str(raiz / "herramientas" / "objetivos.yaml"), help="YAML con los objetivos del SLA")
     ap.add_argument("--salida", help="Ruta del informe en Markdown (opcional)")
     ap.add_argument("--fecha-emision", default=date.today().isoformat(), help="Fecha del informe (AAAA-MM-DD)")
     args = ap.parse_args(argv)
